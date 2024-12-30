@@ -1,7 +1,7 @@
 module.exports = (bot) => {
   const adminId = '7027291897'; // Remplacez par votre ID Telegram
 
-  bot.command('callad', async (ctx) => {
+  bot.command('call', async (ctx) => {
     const message = ctx.message.text.split(' ').slice(1).join(' ');
 
     if (!message) {
