@@ -5,7 +5,7 @@ module.exports = (bot) => {
     const message = ctx.message.text.split(' ').slice(1).join(' ');
 
     if (!message) {
-      return ctx.reply('Veuillez écrire un message à envoyer à l\'administrateur, comme : /callad Bonjour, j\'ai un problème.');
+      return ctx.reply('Veuillez écrire un message à envoyer à l\'administrateur, comme : /call Bonjour, j\'ai un problème.');
     }
 
     try {
