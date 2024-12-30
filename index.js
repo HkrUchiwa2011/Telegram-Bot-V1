@@ -24,7 +24,7 @@ require('./commands/start')(bot);
 require('./commands/imgbb')(bot);
 require('./commands/getid')(bot);
 require('./commands/pin')(bot);
-require('./commands/callad')(bot);
+require('./commands/call')(bot);
 
 bot.telegram.setWebhook(`${URL}/bot${token}`);
 app.use(bot.webhookCallback(`/bot${token}`));
