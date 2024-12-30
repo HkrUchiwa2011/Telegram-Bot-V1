@@ -4,14 +4,17 @@ module.exports = (bot) => {
             { command: '/ai', description: 'poser des questions' },
             { command: '/help', description: 'Afficher cette liste des commandes' },
             { command: '/admin', description: 'Voir la liste des administrateurs' },
-            { command: '/addadmin <ID>', description: 'Ajouter un adminins' },
-            { command: '/removeadmin <ID>', description: 'Retirer un admins' },
+            { command: '/addadmin <ID>', description: 'Ajouter un admin' },
+            { command: '/removeadmin <ID>', description: 'Retirer un admin' },
             { command: '/translate <langue_source> <langue_cible> <texte>', description: 'Traduire vos textes dans tous les langues que vous souhaitez 🌐' },
             { command: '/start', description: 'démarrage du bot' },
             { command: '/getid', description: 'Obtenez votre ID Telegram' },
             { command: '/imgbb', description: 'transforme les photos en lien' },
             { command: '/pin', description: 'Recherchez vos images' },
-            { command : '/call', description: 'Contactez admin du bot' },
+            { command: '/call', description: 'Contactez admin du bot' },
+            { command: '/lyrics', description: 'Retrouvez les paroles de vos chansons' },
+            { command: '/out' , description: 'Permets de faire partir le bot dun groupe: ⛔Seul les admins peuvent utiliser cette commande⛔' },
+            { command: 'users' , description: 'Permet de voir ceux qui interagissent avec le bot: ⛔Seul les admins peuvent utiliser cette comande⛔' },
        
         ];
 
