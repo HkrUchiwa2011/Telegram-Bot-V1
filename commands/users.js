@@ -32,8 +32,15 @@ bot.use((ctx, next) => {
     return next();
 });
 
-// Commande pour afficher les utilisateurs
-bot.command('users', (ctx) => {
+// Commande pour afficher les utilisateurs (réservée aux admins)
+bot.command('users', async (ctx) => {
+    const chatMember = await ctx.telegram.getChatMember(ctx.chat.id, ctx.from.id);
+
+    // Vérifier si l'utilisateur est admin
+    if (chatMember.status !== 'administrator' && chatMember.status !== 'creator') {
+        return ctx.reply("Désolé, cette commande est réservée aux administrateurs.");
+    }
+
     if (users.length === 0) {
         return ctx.reply("Aucun utilisateur n'a interagi avec ce bot.");
     }
