@@ -13,7 +13,9 @@ module.exports = (bot) => {
             { command: '/pin', description: 'Recherchez vos images' },
             { command: '/call', description: 'Contactez admin du bot' },
             { command: '/lyrics', description: 'Retrouvez les paroles de vos chansons' },
-        
+            { command: '/out' , description : 'Permet de faire sortir le bot dun groupe'},
+            { command: '/users' , description : ' Permet de voir les utilisateurs du bot'},
+    
        
         ];
 
