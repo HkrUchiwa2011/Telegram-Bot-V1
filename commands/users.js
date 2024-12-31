@@ -25,17 +25,27 @@ function registerUsersCommand(bot) {
     });
 
     bot.command('users', async (ctx) => {
-        const chatMember = await ctx.telegram.getChatMember(ctx.chat.id, ctx.from.id);
-        if (chatMember.status !== 'administrator' && chatMember.status !== 'creator') {
-            return ctx.reply("Seuls les administrateurs peuvent utiliser cette commande.");
+        if (ctx.chat.type === 'private') {
+            return ctx.reply("Cette commande est utilisable uniquement dans les groupes.");
         }
 
-        if (users.length === 0) {
-            return ctx.reply("Aucun utilisateur n'a interagi avec ce bot.");
-        }
+        try {
+            const chatMember = await ctx.telegram.getChatMember(ctx.chat.id, ctx.from.id);
 
-        const userList = users.map(user => `- ${user.username} (${user.id})`).join('\n');
-        ctx.reply(`Voici les utilisateurs enregistrés :\n\n${userList}`);
+            if (['administrator', 'creator'].includes(chatMember.status)) {
+                if (users.length === 0) {
+                    return ctx.reply("Aucun utilisateur n'a interagi avec ce bot.");
+                }
+
+                const userList = users.map(user => `- ${user.username} (${user.id})`).join('\n');
+                ctx.reply(`Voici les utilisateurs enregistrés :\n\n${userList}`);
+            } else {
+                ctx.reply("Seuls les administrateurs peuvent utiliser cette commande.");
+            }
+        } catch (error) {
+            console.error("Erreur lors de la vérification des droits :", error.message);
+            ctx.reply("Erreur lors de la vérification des droits.");
+        }
     });
 }
 
