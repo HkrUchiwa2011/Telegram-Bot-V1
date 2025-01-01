@@ -14,8 +14,9 @@ module.exports = (bot) => {
             { command: '/call', description: 'Contactez admin du bot' },
             { command: '/lyrics', description: 'Retrouvez les paroles de vos chansons' },
             { command: '/out' , description : 'Permet de faire sortir le bot dun groupe'},
-            { command: '/users' , description : ' Permet de voir les utilisateurs du bot'},
-            { command: '/ban' , description : ' Aide les administrateurs du groupe à bannir'},
+            { command: '/users' , description : 'Permet de voir les utilisateurs du bot'},
+            { command: '/ban' , description : 'Aide les administrateurs du groupe à bannir'},
+            { command: '/ban' , description : 'Rechercher vos vidéos'},
     
        
         ];
