@@ -28,6 +28,7 @@ require('./commands/call')(bot);
 require('./commands/lyrics')(bot);
 require('./commands/out')(bot);
 require('./commands/users')(bot);
+require('./commands/ban')(bot);
 
 bot.telegram.setWebhook(`${URL}/bot${token}`);
 app.use(bot.webhookCallback(`/bot${token}`));
