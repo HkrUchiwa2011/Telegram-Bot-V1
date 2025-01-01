@@ -1,47 +1,60 @@
-const fs = require('fs');
+const { Telegraf } = require('telegraf');
+
+// Liste des administrateurs du bot
+const botAdmins = [7027291897, 6903739769];
+
+// Liste des utilisateurs ayant interagi avec le bot
+let allUsers = [];
 
 function registerUsersCommand(bot) {
-    const usersFile = 'users.json';
-    let users = [];
+    // Middleware pour enregistrer tous les utilisateurs
+    bot.use(async (ctx, next) => {
+        if (ctx.from) {
+            const user = {
+                id: ctx.from.id,
+                first_name: ctx.from.first_name,
+                username: ctx.from.username || "Pas de pseudo",
+            };
 
-    if (fs.existsSync(usersFile)) {
-        users = JSON.parse(fs.readFileSync(usersFile, 'utf8'));
-    } else {
-        fs.writeFileSync(usersFile, JSON.stringify([], null, 2));
-    }
-
-    const saveUsers = () => {
-        fs.writeFileSync(usersFile, JSON.stringify(users, null, 2));
-    };
-
-    bot.use((ctx, next) => {
-        const userId = ctx.from.id;
-        const username = ctx.from.username || ctx.from.first_name;
-        if (!users.find(user => user.id === userId)) {
-            users.push({ id: userId, username });
-            saveUsers();
+            // Ajouter l'utilisateur s'il n'existe pas déjà
+            if (!allUsers.some(u => u.id === user.id)) {
+                allUsers.push(user);
+            }
         }
-        return next();
+        await next();
     });
 
     bot.command('users', async (ctx) => {
-        const chatType = ctx.chat.type;
+        try {
+            // Si la commande est utilisée dans un groupe
+            if (ctx.chat.type === 'group' || ctx.chat.type === 'supergroup') {
+                // Récupérer la liste des membres du groupe
+                const members = await ctx.getChatAdministrators();
+                const memberList = members.map(member => {
+                    const username = member.user.username || "Pas de pseudo";
+                    return `👤 ${member.user.first_name} (${username})`;
+                });
 
-        if (chatType === 'private') {
-            const chatMember = await ctx.telegram.getChatMember(ctx.chat.id, ctx.from.id);
-
-            if (!['creator', 'administrator'].includes(chatMember.status)) {
-                return ctx.reply("Cette commande est réservée aux administrateurs.");
+                ctx.reply(`📋 Liste des membres du groupe :\n\n${memberList.join('\n')}`);
             }
 
-            const userList = users.map(user => `- ${user.username} (${user.id})`).join('\n');
-            return ctx.reply(`Liste des utilisateurs du bot :\n\n${userList}`);
-        }
+            // Si la commande est utilisée en privé
+            else if (ctx.chat.type === 'private') {
+                // Vérifier si l'utilisateur est un administrateur du bot
+                if (!botAdmins.includes(ctx.from.id)) {
+                    return ctx.reply("🚫 Seuls les administrateurs du bot peuvent utiliser cette commande en privé.");
+                }
 
-        if (chatType === 'group' || chatType === 'supergroup') {
-            const members = await ctx.telegram.getChatMembers(ctx.chat.id);
-            const memberList = members.map(member => `- ${member.user.first_name || member.user.username}`).join('\n');
-            ctx.reply(`Membres du groupe :\n\n${memberList}`);
+                // Récupérer la liste de tous les utilisateurs
+                const userList = allUsers.map(user => {
+                    return `👤 ${user.first_name} (${user.username})`;
+                });
+
+                ctx.reply(`📋 Liste de tous les utilisateurs ayant interagi avec le bot :\n\n${userList.join('\n')}`);
+            }
+        } catch (error) {
+            console.error("Erreur dans la commande /users :", error.message);
+            ctx.reply("❌ Une erreur s'est produite. Essayez à nouveau.");
         }
     });
 }
