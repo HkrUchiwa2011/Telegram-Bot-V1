@@ -20,13 +20,8 @@ module.exports = (bot) => {
   bot.command('users', async (ctx) => {
     try {
       if (ctx.chat.type === 'group' || ctx.chat.type === 'supergroup') {
-        const members = await ctx.getChatAdministrators();
-        const memberList = members.map((member) => {
-          const username = member.user.username || "Pas de pseudo";
-          return `👤 ${member.user.first_name} (${username})`;
-        });
-
-        ctx.reply(`📋 Liste des administrateurs du groupe :\n\n${memberList.join('\n')}`);
+        const members = await ctx.getChatMembersCount();
+        ctx.reply(`📋 Le groupe contient ${members} membres.`);
       } else if (ctx.chat.type === 'private') {
         if (!botAdmins.includes(ctx.from.id)) {
           return ctx.reply("🚫 Seuls les administrateurs du bot peuvent utiliser cette commande en privé.");
@@ -36,11 +31,11 @@ module.exports = (bot) => {
           return `👤 ${user.first_name} (${user.username})`;
         });
 
-        ctx.reply(`📋 Liste des utilisateurs ayant interagi avec le bot :\n\n${userList.join('\n')}`);
+        ctx.reply(`📋 Utilisateurs interagissant avec le bot :\n\n${userList.join('\n')}`);
       }
     } catch (error) {
       console.error('Erreur dans la commande /users :', error.message);
-      ctx.reply('❌ Une erreur est survenue. Essayez à nouveau.');
+      ctx.reply('❌ Une erreur est survenue.');
     }
   });
 };
