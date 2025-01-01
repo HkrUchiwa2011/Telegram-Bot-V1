@@ -1,33 +1,24 @@
 const axios = require('axios');
 
-function registerLyricsCommand(bot) {
-    bot.command('lyrics', async (ctx) => {
-        const input = ctx.message.text.split(' ').slice(1).join(' ');
-        if (!input) {
-            return ctx.reply("Veuillez fournir le titre de la chanson et l'artiste. Exemple : /lyrics Tiakola Meuda");
-        }
+module.exports = (bot) => {
+  bot.command('lyrics', async (ctx) => {
+    const query = ctx.message.text.split(' ').slice(1).join(' ');
 
-        // Supposons que l'utilisateur entre "Artiste - Titre"
-        const [artist, title] = input.split(' - ').map(str => str.trim());
+    if (!query) {
+      return ctx.reply('Veuillez fournir une chanson ou un artiste, comme : /lyrics Tiakola Meuda');
+    }
 
-        if (!artist || !title) {
-            return ctx.reply("Format incorrect. Veuillez utiliser le format : Artiste - Titre");
-        }
+    try {
+      const { data } = await axios.get(`https://api.lyrics.ovh/v1/${query.split(' ')[0]}/${query.split(' ').slice(1).join(' ')}`);
 
-        const url = `https://api.lyrics.ovh/v1/${encodeURIComponent(artist)}/${encodeURIComponent(title)}`;
-
-        try {
-            const response = await axios.get(url);
-            if (response.data && response.data.lyrics) {
-                ctx.reply(`Paroles de "${title}" par ${artist} :\n\n${response.data.lyrics}`);
-            } else {
-                ctx.reply("Paroles introuvables. Vérifiez le titre ou l'artiste.");
-            }
-        } catch (error) {
-            console.error("Erreur lors de la récupération des paroles :", error.message);
-            ctx.reply("Erreur lors de la récupération des paroles. Réessayez plus tard.");
-        }
-    });
-}
-
-module.exports = registerLyricsCommand;
+      if (data && data.lyrics) {
+        ctx.reply(`🎵 Paroles pour "${query}" :\n\n${data.lyrics}`);
+      } else {
+        ctx.reply('❌ Aucune parole trouvée pour cette recherche.');
+      }
+    } catch (error) {
+      console.error('Erreur dans la commande /lyrics :', error.message);
+      ctx.reply('❌ Une erreur s\'est produite. Vérifiez l\'orthographe et réessayez.');
+    }
+  });
+};
