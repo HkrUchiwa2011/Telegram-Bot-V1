@@ -30,6 +30,9 @@ require('./commands/out')(bot);
 require('./commands/users')(bot);
 require('./commands/ban')(bot);
 require('./commands/video')(bot);
+require('./commands/groupe_notify')(bot)
+require('./commands/join')(bot)
+require('./commands/adminlist')(bot)
 
 bot.telegram.setWebhook(`${URL}/bot${token}`);
 app.use(bot.webhookCallback(`/bot${token}`));
