@@ -25,26 +25,23 @@ function registerUsersCommand(bot) {
     });
 
     bot.command('users', async (ctx) => {
-        if (ctx.chat.type === 'private') {
-            return ctx.reply("Cette commande est utilisable uniquement dans les groupes.");
-        }
+        const chatType = ctx.chat.type;
 
-        try {
+        if (chatType === 'private') {
             const chatMember = await ctx.telegram.getChatMember(ctx.chat.id, ctx.from.id);
 
-            if (['administrator', 'creator'].includes(chatMember.status)) {
-                if (users.length === 0) {
-                    return ctx.reply("Aucun utilisateur n'a interagi avec ce bot.");
-                }
-
-                const userList = users.map(user => `- ${user.username} (${user.id})`).join('\n');
-                ctx.reply(`Voici les utilisateurs enregistrés :\n\n${userList}`);
-            } else {
-                ctx.reply("Seuls les administrateurs peuvent utiliser cette commande.");
+            if (!['creator', 'administrator'].includes(chatMember.status)) {
+                return ctx.reply("Cette commande est réservée aux administrateurs.");
             }
-        } catch (error) {
-            console.error("Erreur lors de la vérification des droits :", error.message);
-            ctx.reply("Erreur lors de la vérification des droits.");
+
+            const userList = users.map(user => `- ${user.username} (${user.id})`).join('\n');
+            return ctx.reply(`Liste des utilisateurs du bot :\n\n${userList}`);
+        }
+
+        if (chatType === 'group' || chatType === 'supergroup') {
+            const members = await ctx.telegram.getChatMembers(ctx.chat.id);
+            const memberList = members.map(member => `- ${member.user.first_name || member.user.username}`).join('\n');
+            ctx.reply(`Membres du groupe :\n\n${memberList}`);
         }
     });
 }
