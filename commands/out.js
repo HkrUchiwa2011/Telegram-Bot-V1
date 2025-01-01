@@ -1,23 +1,24 @@
-function registerOutCommand(bot) {
-    bot.command('out', async (ctx) => {
-        if (ctx.chat.type !== 'group' && ctx.chat.type !== 'supergroup') {
-            return ctx.reply("Cette commande est uniquement utilisable dans les groupes.");
+module.exports = (bot) => {
+  bot.command('out', async (ctx) => {
+    try {
+      // Vérifier si l'utilisateur est un admin dans le groupe
+      if (ctx.chat.type === 'group' || ctx.chat.type === 'supergroup') {
+        const admins = await ctx.getChatAdministrators();
+        const isAdmin = admins.some((admin) => admin.user.id === ctx.from.id);
+
+        if (!isAdmin) {
+          return ctx.reply("🚫 Seuls les administrateurs du groupe peuvent demander au bot de sortir.");
         }
 
-        try {
-            const chatMember = await ctx.telegram.getChatMember(ctx.chat.id, ctx.from.id);
-
-            if (['administrator', 'creator'].includes(chatMember.status)) {
-                await ctx.leaveChat();
-                console.log(`Le bot a quitté le groupe : ${ctx.chat.title}`);
-            } else {
-                ctx.reply("Seuls les administrateurs peuvent utiliser cette commande.");
-            }
-        } catch (error) {
-            console.error("Erreur lors de la tentative de quitter le groupe :", error.message);
-            ctx.reply("Erreur lors de la tentative de quitter le groupe.");
-        }
-    });
-}
-
-module.exports = registerOutCommand;
+        // Quitter le groupe
+        await ctx.leaveChat();
+        ctx.reply("👋 Le bot a quitté le groupe.");
+      } else {
+        ctx.reply("Cette commande est uniquement disponible dans les groupes.");
+      }
+    } catch (error) {
+      console.error("Erreur dans la commande /out :", error.message);
+      ctx.reply("❌ Une erreur est survenue. Le bot n'a pas pu quitter le groupe.");
+    }
+  });
+};
