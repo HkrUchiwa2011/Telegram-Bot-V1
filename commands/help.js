@@ -16,7 +16,7 @@ module.exports = (bot) => {
             { command: '/out' , description : 'Permet de faire sortir le bot dun groupe'},
             { command: '/users' , description : 'Permet de voir les utilisateurs du bot'},
             { command: '/ban' , description : 'Aide les administrateurs du groupe à bannir'},
-            { command: '/ban' , description : 'Rechercher vos vidéos'},
+            { command: '/video' , description : 'Rechercher vos vidéos'},
     
        
         ];
