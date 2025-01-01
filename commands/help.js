@@ -19,6 +19,7 @@ module.exports = (bot) => {
             { command: '/video' , description : 'Rechercher vos vidéos'},
             { command: '/adminlist' , description : 'Voir la liste des admins'},
             { command: '/join' , description : 'No Description'},
+            { command: '/group_notify' , description : ''},
     
        
         ];
