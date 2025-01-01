@@ -9,28 +9,24 @@ module.exports = (bot) => {
     }
 
     try {
-      const { data } = await axios.get('https://api.duckduckgo.com/', {
+      const { data } = await axios.get('https://api.example.com/videos', {
         params: {
-          q: query,
-          format: 'json',
-          no_html: 1,
-          t: 'telegram_bot',
+          search: query,
+          limit: 3, // Nombre de résultats
+          apikey: '84mtCiaqMb_YmStKqbe5zXbgp1RK7jnnxkITlsLcKJ6K0JkTSxiYv7hP1lGjqGCkzwNfg3Z37LC9tTYtFHiuKQ',
         },
       });
 
-      if (data.RelatedTopics && data.RelatedTopics.length > 0) {
-        const results = data.RelatedTopics.slice(0, 3); // Limite à 3 résultats
-        results.forEach((topic) => {
-          if (topic.FirstURL && topic.Text) {
-            ctx.reply(`🎥 [${topic.Text}](${topic.FirstURL})`, { parse_mode: 'Markdown' });
-          }
+      if (data.results && data.results.length > 0) {
+        data.results.forEach((video) => {
+          ctx.reply(`🎥 [${video.title}](${video.url})`, { parse_mode: 'Markdown' });
         });
       } else {
         ctx.reply('❌ Aucune vidéo trouvée pour cette recherche.');
       }
     } catch (error) {
       console.error('Erreur dans la commande /video :', error.message);
-      ctx.reply('❌ Une erreur est survenue. Veuillez réessayer plus tard.');
+      ctx.reply('❌ Une erreur est survenue.');
     }
   });
 };
