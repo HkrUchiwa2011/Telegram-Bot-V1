@@ -5,28 +5,26 @@ module.exports = (bot) => {
     const query = ctx.message.text.split(' ').slice(1).join(' ');
 
     if (!query) {
-      return ctx.reply('Veuillez fournir une recherche, comme : /video Naruto épisode 5');
+      return ctx.reply('❌ Veuillez fournir un titre, comme : /video Naruto épisode 5');
     }
 
     try {
-      const { data } = await axios.get('https://api.example.com/videos', {
-        params: {
-          search: query,
-          limit: 3, // Nombre de résultats
-          apikey: '84mtCiaqMb_YmStKqbe5zXbgp1RK7jnnxkITlsLcKJ6K0JkTSxiYv7hP1lGjqGCkzwNfg3Z37LC9tTYtFHiuKQ',
-        },
-      });
+      // Rechercher des vidéos sur Dailymotion
+      const searchUrl = `https://api.dailymotion.com/videos?search=${encodeURIComponent(query)}&limit=1`;
+      const { data } = await axios.get(searchUrl);
 
-      if (data.results && data.results.length > 0) {
-        data.results.forEach((video) => {
-          ctx.reply(`🎥 [${video.title}](${video.url})`, { parse_mode: 'Markdown' });
-        });
-      } else {
-        ctx.reply('❌ Aucune vidéo trouvée pour cette recherche.');
+      if (!data.list || data.list.length === 0) {
+        return ctx.reply('❌ Aucune vidéo trouvée pour cette recherche.');
       }
+
+      const video = data.list[0];
+      const videoUrl = `https://www.dailymotion.com/video/${video.id}`;
+
+      // Envoyer la vidéo directement
+      return ctx.replyWithVideo(videoUrl, { caption: `🎥 Résultat pour "${query}"` });
     } catch (error) {
       console.error('Erreur dans la commande /video :', error.message);
-      ctx.reply('❌ Une erreur est survenue.');
+      ctx.reply('❌ Une erreur est survenue. Réessayez plus tard.');
     }
   });
 };
