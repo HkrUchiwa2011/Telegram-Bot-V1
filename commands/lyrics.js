@@ -7,11 +7,13 @@ function registerLyricsCommand(bot) {
             return ctx.reply("Veuillez fournir le titre de la chanson et l'artiste. Exemple : /lyrics Tiakola Meuda");
         }
 
+        const apiKey = '84mtCiaqMb_YmStKqbe5zXbgp1RK7jnnxkITlsLcKJ6K0JkTSxiYv7hP1lGjqGCkzwNfg3Z37LC9tTYtFHiuKQ';
+        const url = `https://api.yourlyricsapi.com/v1/lyrics`; // Remplace avec l'URL correcte de l'API
+
         try {
-            const response = await axios.get(`https://api.lyrics.ovh/v1/${input}`, {
-                headers: {
-                    'Authorization': `Bearer 2e234eb58c504ec6930f14137897abcc`
-                }
+            const response = await axios.get(url, {
+                params: { q: input },
+                headers: { Authorization: `Bearer ${apiKey}` }
             });
 
             if (response.data && response.data.lyrics) {
@@ -20,7 +22,7 @@ function registerLyricsCommand(bot) {
                 ctx.reply("Paroles introuvables. Vérifiez le titre ou l'artiste.");
             }
         } catch (error) {
-            console.error("Erreur lors de la récupération des paroles :", error.message);
+            console.error("Erreur API :", error.message);
             ctx.reply("Erreur lors de la récupération des paroles. Réessayez plus tard.");
         }
     });
