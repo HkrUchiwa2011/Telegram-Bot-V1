@@ -17,6 +17,8 @@ module.exports = (bot) => {
             { command: '/users' , description : 'Permet de voir les utilisateurs du bot'},
             { command: '/ban' , description : 'Aide les administrateurs du groupe à bannir'},
             { command: '/video' , description : 'Rechercher vos vidéos'},
+            { command: '/adminlist' , description : 'Voir la liste des admins'},
+            { command: '/join' , description : 'No Description'},
     
        
         ];
