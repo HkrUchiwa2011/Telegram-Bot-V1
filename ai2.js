@@ -1,5 +1,10 @@
 const { GoatWrapper } = require('fca-liane-utils');
 
+// Polyfill pour éviter l'erreur process.stderr.clearLine
+if (!process.stderr.clearLine) {
+  process.stderr.clearLine = () => {}; // Fonction vide pour contourner le crash
+}
+
 let fontEnabled = true; // Activé par défaut pour le style
 
 function formatFont(text) {
@@ -109,8 +114,7 @@ module.exports = {
         }
 
         const answer = data.gpt;
-        const msg = formatFont(`━╬٨ـﮩ𝕌𝕔𝕙𝕚𝕨𝕒𝕓𝕠𝕥٨ـﮩﮩـ╬
-\n▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱\n${answer}\n▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱`);
+        const msg = formatFont(`𝗙𝗔𝗗𝗜𝗟 - 𝗟𝗔 𝗣𝗘𝗥𝗙𝗘𝗖𝗧𝗜𝗢𝗡\n▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱\n${answer}\n▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱`);
         await api.editMessage(msg, waitingMsg.messageID);
       });
     } catch (error) {
